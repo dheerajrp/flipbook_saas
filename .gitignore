@@ -1,0 +1,7 @@
+venv
+media
+pdfs
+*.sqlite3
+__pycache__
+flipbooks
+migrations
