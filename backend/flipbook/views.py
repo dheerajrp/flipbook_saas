@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import FlipBook
+from .models import FlipBook, Subscription
 from .serializers import FlipBookSerializer
 
 class FlipBookViewSet(viewsets.ModelViewSet):
@@ -92,3 +92,13 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 @permission_classes([IsAuthenticated])
 def protected_view(request):
     return Response({"message": f"Hello {request.user.username}, you are authenticated!"})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def subscribe_flipbook(request, flipbook_id):
+    try:
+        flipbook = FlipBook.objects.get(id=flipbook_id)
+        Subscription.objects.create(user=request.user, flipbook=flipbook)
+        return Response({"message": "Subscribed successfully"}, status=status.HTTP_201_CREATED)
+    except FlipBook.DoesNotExist:
+        return Response({"error": "Flipbook not found"}, status=status.HTTP_404_NOT_FOUND)

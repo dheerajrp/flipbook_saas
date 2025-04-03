@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import CustomTokenObtainPairView, FlipBookViewSet, flipbook_view, get_authenticated_user, protected_view, register_user
+from rest_framework_simplejwt.views import TokenRefreshView
+from .views import CustomTokenObtainPairView, FlipBookViewSet, flipbook_view, get_authenticated_user, protected_view, register_user, subscribe_flipbook
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('flipbook/<int:flipbook_id>/', flipbook_view, name='flipbook_view'),
     path("api/user/", get_authenticated_user, name="authenticated_user"),
     path('api/protected/', protected_view, name='protected'),
+    path('subscribe/<int:flipbook_id>/', subscribe_flipbook, name="subscribe_flipbook"),
 
 ]
 if settings.DEBUG:
