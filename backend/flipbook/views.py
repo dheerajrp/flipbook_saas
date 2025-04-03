@@ -67,9 +67,11 @@ def flipbook_view(request, flipbook_id):
     flipbook_folder = os.path.join(settings.MEDIA_ROOT, f"flipbooks/flipbook_{flipbook_id}")
     media_url = settings.MEDIA_URL + f"flipbooks/flipbook_{flipbook_id}/"
 
+    # Ensure the folder exists
     if not os.path.exists(flipbook_folder):
         return render(request, "flipbook.html", {"image_urls": []})
 
+    # Get all images sorted
     images = sorted([media_url + img for img in os.listdir(flipbook_folder) if img.endswith(".jpg")])
 
     return render(request, "flipbook.html", {"image_urls": images})
