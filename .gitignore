@@ -5,3 +5,4 @@ pdfs
 __pycache__
 flipbooks
 migrations
+static

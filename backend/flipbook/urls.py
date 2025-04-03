@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import FlipBookViewSet, register_user
+from .views import FlipBookViewSet, flipbook_view, get_authenticated_user, register_user
 
 router = DefaultRouter()
 router.register(r"flipbooks", FlipBookViewSet, basename="flipbook")
@@ -11,4 +11,7 @@ urlpatterns = [
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/", include(router.urls)),
+    path('flipbook/<int:flipbook_id>/', flipbook_view, name='flipbook_view'),
+    path("api/user/", get_authenticated_user, name="authenticated_user"),
+
 ]
