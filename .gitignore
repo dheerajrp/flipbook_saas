@@ -6,3 +6,4 @@ __pycache__
 flipbooks
 migrations
 static
+.env
