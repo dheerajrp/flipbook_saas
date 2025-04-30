@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import FlipBook, Subscription
+
+admin.site.register(FlipBook)
+admin.site.register(Subscription)
+

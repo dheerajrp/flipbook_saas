@@ -8,8 +8,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import FlipBook
+from .models import FlipBook, Subscription
 from .serializers import FlipBookSerializer
 
 class FlipBookViewSet(viewsets.ModelViewSet):
@@ -75,3 +77,28 @@ def flipbook_view(request, flipbook_id):
     images = sorted([media_url + img for img in os.listdir(flipbook_folder) if img.endswith(".jpg")])
 
     return render(request, "flipbook.html", {"image_urls": images})
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['username'] = user.username  # Custom claim
+        return token
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def protected_view(request):
+    return Response({"message": f"Hello {request.user.username}, you are authenticated!"})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def subscribe_flipbook(request, flipbook_id):
+    try:
+        flipbook = FlipBook.objects.get(id=flipbook_id)
+        Subscription.objects.create(user=request.user, flipbook=flipbook)
+        return Response({"message": "Subscribed successfully"}, status=status.HTTP_201_CREATED)
+    except FlipBook.DoesNotExist:
+        return Response({"error": "Flipbook not found"}, status=status.HTTP_404_NOT_FOUND)
